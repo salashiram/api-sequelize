@@ -4,7 +4,7 @@ const router = require("../router/user.router");
 
 const app = express();
 
-// Middleware para parsear JSON
+// parsear JSON
 app.use(express.json());
 
 app.use(morgan("dev"));

@@ -2,8 +2,6 @@ const router = require("express").Router();
 
 const User = require("../model/user.model");
 
-// const { faker } = require("@faker-js/faker");
-
 router.get("/user", async (req, res) => {
   const user = await User.findAll();
   res.status(200).json({
@@ -28,32 +26,44 @@ router.get("/user/:idUser", async (req, res) => {
 });
 
 router.post("/user", async (req, res) => {
-  const dataUser = req.body;
+  const { userName, email, pass, fullName, gender, userImage } = req.body;
 
-  if (!dataUser) {
+  if (!userName || !email || !pass || !fullName || !gender) {
     return res.status(400).json({
       ok: false,
-      message: "No data provided",
+      message: "All fields are required",
     });
   }
 
   try {
-    await User.sync();
+    const existingUserName = await User.findOne({ where: { userName } });
+    const existingEmail = await User.findOne({ where: { email } });
+    if (existingUserName) {
+      return res.status(400).json({
+        ok: false,
+        message: "Username already exists",
+      });
+    } else if (existingEmail) {
+      return res.status(400).json({
+        ok: false,
+        message: "Email already exists",
+      });
+    }
 
-    const createUser = await User.create({
-      userName: dataUser.userName,
-      pass: dataUser.pass,
-      fullName: dataUser.fullName,
-      email: dataUser.email,
-      gender: dataUser.gender,
-      userImage: dataUser.userImage,
+    const newUser = await User.create({
+      userName,
+      pass,
+      fullName,
+      email,
+      gender,
+      userImage,
     });
 
     res.status(201).json({
       ok: true,
       status: 201,
       message: "Created user",
-      user: createUser,
+      user: newUser,
     });
   } catch (error) {
     console.error(error);

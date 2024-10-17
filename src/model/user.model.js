@@ -1,21 +1,5 @@
 const { Sequelize, Model, DataTypes } = require("sequelize");
-
-const sequelize = new Sequelize("Petstagram", "root", "YHsy8B2QJQTrYg3A", {
-  host: "localhost",
-  dialect: "mysql",
-  port: "3306",
-});
-
-async function testConnection() {
-  try {
-    await sequelize.authenticate();
-    console.log("All good!!");
-  } catch (err) {
-    console.log("All bad!!", err);
-  }
-}
-
-testConnection();
+const sequelize = require("../connection");
 
 class User extends Model {}
 
